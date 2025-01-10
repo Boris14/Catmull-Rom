@@ -6,12 +6,34 @@
 script = ExtResource("1_udord")
 
 [node name="Point1" type="Marker2D" parent="."]
-position = Vector2(192, 315)
-
-position = Vector2(405, 247)
+position = Vector2(156, 348)
 
 [node name="Point3" type="Marker2D" parent="."]
-position = Vector2(672, 326)
+position = Vector2(463, 340)
 
 [node name="Point4" type="Marker2D" parent="."]
-position = Vector2(696, 510)
+position = Vector2(736, 306)
+
+[node name="UICanvas" type="CanvasLayer" parent="."]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UICanvas"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -172.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+alignment = 1
+
+[node name="AddPointButton" type="Button" parent="UICanvas/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Add Point"
+
+[node name="RemovePointButton" type="Button" parent="UICanvas/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Remove Point"
