@@ -5,15 +5,6 @@
 [node name="GridCanvas" type="Node2D"]
 script = ExtResource("1_udord")
 
-[node name="Point1" type="Marker2D" parent="."]
-position = Vector2(156, 348)
-
-[node name="Point3" type="Marker2D" parent="."]
-position = Vector2(463, 340)
-
-[node name="Point4" type="Marker2D" parent="."]
-position = Vector2(736, 306)
-
 [node name="UICanvas" type="CanvasLayer" parent="."]
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UICanvas"]
@@ -37,3 +28,21 @@ text = "Add Point"
 unique_name_in_owner = true
 layout_mode = 2
 text = "Remove Point"
+
+[node name="ToggleLines" type="Button" parent="UICanvas/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Toggle Lines
+"
+
+[node name="Point1" type="Marker2D" parent="."]
+position = Vector2(222, 293)
+
+[node name="Point2" type="Marker2D" parent="."]
+position = Vector2(474, 419)
+
+[node name="Point3" type="Marker2D" parent="."]
+position = Vector2(764, 172)
+
+[node name="Point4" type="Marker2D" parent="."]
+position = Vector2(923, 367)
