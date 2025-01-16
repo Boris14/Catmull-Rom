@@ -7,42 +7,49 @@ extends Node2D
 @export var lines_color := Color.YELLOW
 @export var curve_color := Color.RED
 @export var points_color := Color.YELLOW
+@export var selected_color := Color.GREEN
 @export var select_radius := 20.0
 @export var curve_segments := 100
 
+var initial_pivot_positions : PackedVector2Array
 var curve_pivots : Array[Marker2D]
 var selected_point : Marker2D = null
 var show_lines := false
 
 func _ready() -> void:
-	%AddPointButton.pressed.connect(_on_add_point_button_pressed)
-	%RemovePointButton.pressed.connect(_on_remove_point_button_pressed)
+	%ResetPoints.pressed.connect(_on_reset_points_button_pressed)
 	%ToggleLines.pressed.connect(_on_toggle_lines_button_pressed)
 	
 	for child in get_children():
 		var point := child as Marker2D
 		if point:
 			curve_pivots.append(point)
+			initial_pivot_positions.append(point.global_position)
 
 
-func _input(event) -> void:
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		if event.keycode == KEY_ESCAPE:
+			get_tree().quit()
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if selected_point and not event.pressed:
 				# Stop dragging if the button is released.
 				selected_point = null
-			else:
+				queue_redraw()
+			elif event.pressed:
 				selected_point = find_point_in_radius(event.position, select_radius)
+				if not selected_point: # Create a new point
+					var new_point = Marker2D.new()
+					add_child(new_point)
+					new_point.global_position = event.position
+					curve_pivots.push_back(new_point)
+					queue_redraw()
 		elif event.button_index == MOUSE_BUTTON_RIGHT and not event.pressed:
-			var clicked_point = find_point_in_radius(event.position, select_radius)
-			if clicked_point:
-				curve_pivots.erase(clicked_point)
-				clicked_point.queue_free()
-			else:
-				clicked_point = Marker2D.new()
-				add_child(clicked_point)
-				clicked_point.global_position = event.position
-				curve_pivots.push_back(clicked_point)
+			var point_to_remove = find_point_in_radius(event.position, select_radius)
+			if point_to_remove:
+				curve_pivots.erase(point_to_remove)
+				point_to_remove.queue_free()
 			queue_redraw()
 
 
@@ -102,6 +109,10 @@ func get_catmull_rom_points(points : PackedVector2Array) -> PackedVector2Array:
 		var berzier_points = [points[i], points[i] + tangent_1/3, \
 			points[i + 1] - tangent_2/3, points[i + 1]]
 		
+		if show_lines:
+			draw_line(points[i] - tangent_1/3, berzier_points[1], Color.SEA_GREEN, 3)
+			draw_line(berzier_points[2], points[i + 1] + tangent_2/3, Color.SEA_GREEN, 3)
+		
 		result.append_array(get_berzier_points(berzier_points))
 	return result
 
@@ -121,30 +132,27 @@ func _draw() -> void:
 	for i in range(curve_pivots.size()):
 		var pivot_pos = curve_pivots[i].global_position
 		draw_circle(pivot_pos, 4, points_color)
-		draw_string(ThemeDB.fallback_font, pivot_pos + Vector2(-10, -30), \
-		 	"(%d, %d)" % [pivot_pos.x, pivot_pos.y], HORIZONTAL_ALIGNMENT_CENTER)
+		#draw_string(ThemeDB.fallback_font, pivot_pos + Vector2(-10, -30), \
+		 	#"(%d, %d)" % [pivot_pos.x, pivot_pos.y], HORIZONTAL_ALIGNMENT_CENTER)
 		if show_lines and i > 0:
-			draw_line(curve_pivots[i - 1].global_position, pivot_pos, lines_color)
-			
+			draw_dashed_line(curve_pivots[i - 1].global_position, pivot_pos, lines_color, 1, 7)
+	
 	draw_polyline(get_catmull_rom_points(get_point_positions(curve_pivots)), curve_color, 2)
 	
+	if selected_point:
+		draw_circle(selected_point.global_position, 4, selected_color)
 	
-func _on_add_point_button_pressed():
-	var new_point = Marker2D.new()
-	add_child(new_point)
 	
-	var viewport_size = get_viewport_rect().size
-	new_point.global_position.x = randf_range(0, viewport_size.x)
-	new_point.global_position.y = randf_range(0, viewport_size.y)
-	curve_pivots.push_back(new_point)
+func _on_reset_points_button_pressed():
+	curve_pivots.clear()
+	
+	for pos in initial_pivot_positions:
+		var new_point = Marker2D.new()
+		add_child(new_point)
+		new_point.global_position = pos
+		curve_pivots.append(new_point)
+		
 	queue_redraw()
-
-
-func _on_remove_point_button_pressed():
-	var removed_point : Marker2D = curve_pivots.pop_back()
-	removed_point.queue_free()
-	queue_redraw()
-
 
 func _on_toggle_lines_button_pressed():
 	show_lines = not show_lines

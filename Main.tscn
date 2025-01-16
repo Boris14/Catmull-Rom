@@ -1,9 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://86qth1n60m4m"]
+[gd_scene load_steps=7 format=3 uid="uid://86qth1n60m4m"]
 
 [ext_resource type="Script" path="res://Scripts/GridCanvas.gd" id="1_udord"]
+[ext_resource type="Texture2D" uid="uid://by316bpei51rs" path="res://Assets/icon.svg" id="2_c0uyy"]
+[ext_resource type="Texture2D" uid="uid://5dyasllvcoxu" path="res://Assets/mouse_left.png" id="3_t2r1u"]
+[ext_resource type="Texture2D" uid="uid://bmc4xigt1yamp" path="res://Assets/mouse_right.png" id="4_foa1u"]
+[ext_resource type="PackedScene" uid="uid://cok6qpkungkfj" path="res://MouseDragImage.tscn" id="5_r7kv3"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_dtoif"]
+line_spacing = 50.0
 
 [node name="GridCanvas" type="Node2D"]
 script = ExtResource("1_udord")
+grid_color = Color(0.605275, 0.605274, 0.605274, 1)
 
 [node name="UICanvas" type="CanvasLayer" parent="."]
 
@@ -19,15 +27,10 @@ grow_horizontal = 0
 grow_vertical = 0
 alignment = 1
 
-[node name="AddPointButton" type="Button" parent="UICanvas/HBoxContainer"]
+[node name="ResetPoints" type="Button" parent="UICanvas/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Add Point"
-
-[node name="RemovePointButton" type="Button" parent="UICanvas/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Remove Point"
+text = "Reset Points"
 
 [node name="ToggleLines" type="Button" parent="UICanvas/HBoxContainer"]
 unique_name_in_owner = true
@@ -35,14 +38,70 @@ layout_mode = 2
 text = "Toggle Lines
 "
 
+[node name="Controls" type="Control" parent="UICanvas"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 280.0
+offset_bottom = 200.0
+
+[node name="ControlsBackground" type="TextureRect" parent="UICanvas/Controls"]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_c0uyy")
+
+[node name="ControlsLabel" type="Label" parent="UICanvas/Controls"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -130.0
+offset_right = -13.0
+grow_horizontal = 0
+grow_vertical = 2
+text = "- Create Point
+- Remove Point
+- Move Point"
+label_settings = SubResource("LabelSettings_dtoif")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UICanvas/Controls"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 146.0
+grow_vertical = 2
+
+[node name="LeftClickImage" type="TextureRect" parent="UICanvas/Controls/VBoxContainer"]
+layout_mode = 2
+texture = ExtResource("3_t2r1u")
+stretch_mode = 3
+
+[node name="RightClickImage" type="TextureRect" parent="UICanvas/Controls/VBoxContainer"]
+layout_mode = 2
+texture = ExtResource("4_foa1u")
+stretch_mode = 3
+
+[node name="MouseDragImage" parent="UICanvas/Controls/VBoxContainer" instance=ExtResource("5_r7kv3")]
+layout_mode = 2
+
 [node name="Point1" type="Marker2D" parent="."]
-position = Vector2(222, 293)
+position = Vector2(194, 267)
 
 [node name="Point2" type="Marker2D" parent="."]
-position = Vector2(474, 419)
+position = Vector2(368, 448)
 
 [node name="Point3" type="Marker2D" parent="."]
-position = Vector2(764, 172)
+position = Vector2(581, 169)
 
 [node name="Point4" type="Marker2D" parent="."]
-position = Vector2(923, 367)
+position = Vector2(740, 446)
+
+[node name="Point5" type="Marker2D" parent="."]
+position = Vector2(934, 273)

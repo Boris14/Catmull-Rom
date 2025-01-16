@@ -13,7 +13,7 @@ config_version=5
 config/name="Catmull-Rom"
 run/main_scene="res://Main.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="res://Assets/icon.svg"
 
 [dotnet]
 
@@ -30,3 +30,4 @@ project/assembly_name="Catmull-Rom"
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.092397, 0.0923971, 0.092397, 1)
