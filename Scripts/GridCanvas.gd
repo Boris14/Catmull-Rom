@@ -26,21 +26,36 @@ func _ready() -> void:
 
 
 func _input(event) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		if selected_point and not event.pressed:
-			# Stop dragging if the button is released.
-			selected_point = null
-		else:
-			for point in curve_pivots:
-				if (event.position - point.global_position).length() < select_radius:
-					# Start dragging if the click is on the sprite.
-					if not selected_point and event.pressed:
-						selected_point = point
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if selected_point and not event.pressed:
+				# Stop dragging if the button is released.
+				selected_point = null
+			else:
+				selected_point = find_point_in_radius(event.position, select_radius)
+		elif event.button_index == MOUSE_BUTTON_RIGHT and not event.pressed:
+			var clicked_point = find_point_in_radius(event.position, select_radius)
+			if clicked_point:
+				curve_pivots.erase(clicked_point)
+				clicked_point.queue_free()
+			else:
+				clicked_point = Marker2D.new()
+				add_child(clicked_point)
+				clicked_point.global_position = event.position
+				curve_pivots.push_back(clicked_point)
+			queue_redraw()
+
 
 	if event is InputEventMouseMotion and selected_point:
 		# While dragging, move the sprite with the mouse.
 		selected_point.global_position = event.position
 		queue_redraw()
+
+func find_point_in_radius(pos : Vector2, radius: float) -> Marker2D:
+	for point in curve_pivots:
+		if (pos - point.global_position).length() < radius:
+			return point
+	return null
 
 
 func get_point_positions(points : Array[Marker2D]) -> PackedVector2Array:
